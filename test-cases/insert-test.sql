@@ -57,9 +57,14 @@ INSERT INTO franchises (address_id)
 );
 
 -- Insert Positions
-
+ INSERT INTO  positions(position_name, hourly_wage)
+ VALUES
+ ('Server', '7.25'),
+ ('Chef', '18'),
+ ('Manager', '25'),
+ ('Host','14');
 -- Insert Employees
-
+ INSERT INTO 
 -- Insert Inspections
 CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_franchises (
 	SELECT 
