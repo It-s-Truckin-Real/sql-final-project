@@ -46,10 +46,6 @@ VALUES
     FROM enumerated_addresses
 	WHERE row_num = 3));
 
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/main
 -- Insert Franchises
 INSERT INTO franchises (address_id) 
 (
@@ -59,7 +55,7 @@ INSERT INTO franchises (address_id)
 );
 
 -- Insert Positions
- INSERT INTO positions (position_name, hourly_wage)
+ INSERT INTO position (position_name, hourly_wage)
  VALUES
  ('Server', '7.25'),
  ('Chef', '18'),
@@ -67,11 +63,6 @@ INSERT INTO franchises (address_id)
  ('Host','14');
 
 -- Insert Employees
-<<<<<<< HEAD
- INSERT INTO  employees ()
--- Insert Inspections
-=======
->>>>>>> refs/remotes/origin/main
 CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_franchises (
 	SELECT 
 	ROW_NUMBER() OVER(ORDER BY franchise_id ASC) AS row_num
@@ -90,7 +81,7 @@ CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_people (
  VALUES
  (
 	(SELECT position_id 
-    FROM positions
+    FROM position
     WHERE position_name = "Manager"),
     (SELECT person_id
     FROM enumerated_people
