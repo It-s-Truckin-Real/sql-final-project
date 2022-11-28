@@ -175,12 +175,25 @@ VALUES ((
 
 -- Insert Orders
 INSERT INTO orders (franchise_id, employee_id, customer_id)
-VALUES ();
+VALUES (
+	(SELECT franchise_id
+    FROM enumerated_franchises
+    WHERE row_num = 1
+	), 
+	(SELECT employee_id
+	FROM employees
+	LIMIT 1
+	),
+	(SELECT customer_id
+	FROM customers
+	LIMIT 1 )
+
+);
 
 -- Insert Dish Ingredients
 INSERT INTO dish_ingredients (dish_id, ingredient_id)
 VALUES (
-	(SELECT dish_id,
+	(SELECT dish_id
 	FROM dishes
 	WHERE dish_name = 'Meat Lover' ),
 	(SELECT ingredient_id
@@ -189,4 +202,17 @@ VALUES (
 
 -- Insert Order Dishes
 INSERT INTO order_dishes (order_id, dish_id)
-VALUES ();
+VALUES (
+
+	(SELECT order_id,
+	FROM orders
+	WHERE franchise_id = (SELECT franchise_id
+    FROM enumerated_franchises
+    WHERE row_num = 1
+	)
+	)
+
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Meat Lover' )
+);
