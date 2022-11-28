@@ -57,22 +57,14 @@ INSERT INTO franchises (address_id)
 );
 
 -- Insert Positions
- INSERT INTO  positions(position_name, hourly_wage)
+ INSERT INTO positions (position_name, hourly_wage)
  VALUES
  ('Server', '7.25'),
  ('Chef', '18'),
  ('Manager', '25'),
  ('Host','14');
--- Insert Employees
- INSERT INTO 
--- Insert Inspections
-CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_franchises (
-	SELECT 
-	ROW_NUMBER() OVER(ORDER BY franchise_id ASC) AS row_num
-	, franchise_id
-	FROM franchises
-);
 
+-- Insert Employees
 CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_people (
 	SELECT 
 	ROW_NUMBER() OVER(ORDER BY person_id ASC) AS row_num
@@ -80,6 +72,28 @@ CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_people (
 	FROM people
 );
 
+CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_franchises (
+	SELECT 
+	ROW_NUMBER() OVER(ORDER BY franchise_id ASC) AS row_num
+	, franchise_id
+	FROM franchises
+);
+
+ INSERT INTO employees (position_id, person_id, franchise_id)
+ VALUES
+ (
+	(SELECT position_id 
+    FROM positions
+    WHERE position_name = "Manager"),
+    (SELECT person_id
+    FROM enumerated_people
+    WHERE row_num = 1),
+    (SELECT franchise_id
+    FROM enumerated_franchises
+    WHERE row_num = 1)
+);
+ 
+-- Insert Inspections
 INSERT INTO inspections (inspection_date, inspection_score, franchise_id, inspector_person_id)
 VALUES ("2022-11-18", 83, (
 	SELECT enumerated_franchises.franchise_id
