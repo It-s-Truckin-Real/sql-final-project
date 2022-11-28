@@ -46,7 +46,6 @@ VALUES
     FROM enumerated_addresses
 	WHERE row_num = 3));
 
--- Insert Customers
 
 -- Insert Franchises
 INSERT INTO franchises (address_id) 
@@ -63,8 +62,9 @@ INSERT INTO franchises (address_id)
  ('Chef', '18'),
  ('Manager', '25'),
  ('Host','14');
+
 -- Insert Employees
- INSERT INTO 
+ INSERT INTO  employees ()
 -- Insert Inspections
 CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_franchises (
 	SELECT 
@@ -95,7 +95,15 @@ VALUES ("2022-11-18", 83, (
 
 -- Insert Payroll
 
+-- Insert Customers
+
 -- Insert Ingredients
+INSERT INTO ingredients( ingredient_name, ingredient_price)
+VALUES 
+('Onions','0.40'),
+('Meat','4.5'),
+('Garlic','0.50'),
+('Fish','3.50');
 
 -- Insert Dishes
 
