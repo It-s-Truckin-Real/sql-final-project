@@ -5,27 +5,39 @@ VALUES ("122 N 5th E", null, "Rexburg", "ID", "83440")
 ,      ("456 N 2nd W", "APT 35", "Rexburg", "ID", "83440");
 
 -- Insert People
-WITH enumerated_addresses AS (
+CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_addresses (
 	SELECT 
 	ROW_NUMBER() OVER(ORDER BY address_id ASC) AS row_num
 	, address_id
-	FROM addresses 
-	WHERE state = "ID"
-)
+	FROM addresses
+);
 
 INSERT INTO people(first_name,last_name,dob,address_id)
 VALUES 
 ('Amirah','Webster','1980-10-02', (
 	SELECT enumerated_addresses.address_id 
-	WHERE row_num = 1)),
+    FROM enumerated_addresses
+	WHERE row_num = 1));
+
+INSERT INTO people(first_name,last_name,dob,address_id)
+VALUES 
 ('Andy','Montoya','2000-02-05', (
 	SELECT enumerated_addresses.address_id 
-	WHERE row_num = 1)),
+    FROM enumerated_addresses
+	WHERE row_num = 1));
+
+INSERT INTO people(first_name,last_name,dob,address_id)
+VALUES 
 ('Essence','Grimes','1989-08-09', (
 	SELECT enumerated_addresses.address_id 
-	WHERE row_num = 3)),
+    FROM enumerated_addresses
+	WHERE row_num = 3));
+
+INSERT INTO people(first_name,last_name,dob,address_id)
+VALUES 
 ('Pierce','Joseph','1989-10-03', (
 	SELECT enumerated_addresses.address_id 
+    FROM enumerated_addresses
 	WHERE row_num = 3));
 
 -- Insert Customers
@@ -39,8 +51,7 @@ INSERT INTO franchises (address_id)
 		SELECT 
 		ROW_NUMBER() OVER(ORDER BY address_id ASC) AS row_num
 		, address_id
-		FROM addresses 
-		WHERE state = "ID"
+		FROM addresses
     ) enumerated_addresses
     WHERE row_num = 2
 );
@@ -87,4 +98,5 @@ VALUES ("2022/11/18", 83, (
 
 -- Insert Order Dishes
 
-
+-- Drop Temporary Tables
+DROP TEMPORARY TABLE IF EXISTS enumerated_addresses;
