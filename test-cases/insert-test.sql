@@ -202,17 +202,14 @@ VALUES (
 
 -- Insert Order Dishes
 INSERT INTO order_dishes (order_id, dish_id)
-VALUES (
-
-	(SELECT order_id,
+VALUES 
+	((SELECT order_id
 	FROM orders
-	WHERE franchise_id = (SELECT franchise_id
-    FROM enumerated_franchises
-    WHERE row_num = 1
-	)
-	)
-
+	WHERE franchise_id = 
+		(SELECT franchise_id
+		FROM enumerated_franchises
+		WHERE row_num = 1)
+	),
 	(SELECT dish_id
 	FROM dishes
-	WHERE dish_name = 'Meat Lover' )
-);
+	WHERE dish_name = 'Meat Lover' ));
