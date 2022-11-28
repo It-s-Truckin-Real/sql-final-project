@@ -1,9 +1,14 @@
-
+-- Insert Addresses
 INSERT INTO addresses (street_1, street_2, city, state, zip_code)
 VALUES ("122 N 5th E", null, "Rexburg", "ID", "83440")
 ,      ("320 S 3rd E", "APT 12", "Rexburg", "ID", "83440")
 ,      ("456 N 2nd W", "APT 35", "Rexburg", "ID", "83440");
 
+-- Insert People
+
+-- Insert Customers
+
+-- Insert Franchises
 INSERT INTO franchises (address_id) 
 (
 	SELECT enumerated_addresses.address_id
@@ -17,7 +22,12 @@ INSERT INTO franchises (address_id)
     ) enumerated_addresses
     WHERE row_num = 2
 );
-    
+
+-- Insert Positions
+
+-- Insert Employees
+
+-- Insert Inspections
 INSERT INTO inspections (inspection_date, inspection_score, franchise_id, inspector_person_id)
 VALUES ("2022/11/18", 83, (
 	SELECT enumerated_franchises.franchise_id
@@ -38,3 +48,21 @@ VALUES ("2022/11/18", 83, (
 		FROM people
     ) enumerated_people
     WHERE row_num = 2));
+
+-- Insert Inspections Employees
+
+-- Insert Time Off Requests
+
+-- Insert Payroll
+
+-- Insert Ingredients
+
+-- Insert Dishes
+
+-- Insert Orders
+
+-- Insert Dish Ingredients
+
+-- Insert Order Dishes
+
+
