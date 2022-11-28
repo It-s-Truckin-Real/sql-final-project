@@ -103,17 +103,47 @@ VALUES ("2022-11-18", 83, (
 
 -- Insert Inspections Employees
 INSERT INTO inspections_employees (inspection_id, employee_id)
-VALUES ();
+VALUES (
+	(SELECT i.inspection_id
+    FROM inspections i
+    INNER JOIN enumerated_franchises f
+    ON i.franchise_id = f.franchise_id
+    WHERE i.inspection_date = "2022-11-18"
+    AND f.row_num = 1),
+    (SELECT e.employee_id
+    FROM employees e
+    INNER JOIN enumerated_people p
+    ON p.person_id = e.person_id
+    WHERE p.row_num = 1));
 
 -- Insert Time Off Requests
-INSERT INTO time_off_requests (date_requested, date_when_requested, employee_id)
-VALUES ();
+INSERT INTO time_off_requests (date_requested_off, date_when_requested, employee_id)
+VALUES ("2022-12-25", "2022-11-18", 
+	(SELECT e.employee_id
+    FROM employees e
+    INNER JOIN enumerated_people p
+    ON p.person_id = e.person_id
+    WHERE p.row_num = 1));
 
 -- Insert Payroll
 INSERT INTO payroll (clock_in, clock_out, employee_id)
-VALUES ();
+VALUES (
 
--- Insert Customers
+	(SELECT TIMESTAMP("2022-11-18",  "9:58:37"))
+,	(SELECT TIMESTAMP("2022-11-18",  "13:10:11"))
+,	(SELECT e.employee_id
+    FROM employees e
+    INNER JOIN enumerated_people p
+    ON p.person_id = e.person_id
+    WHERE p.row_num = 1))
+    
+,	((SELECT TIMESTAMP("2022-11-18",  "13:42:52"))
+,	(SELECT TIMESTAMP("2022-11-18",  "18:30:29"))
+,	(SELECT e.employee_id
+    FROM employees e
+    INNER JOIN enumerated_people p
+    ON p.person_id = e.person_id
+    WHERE p.row_num = 1));
 
 -- Insert Ingredients
 INSERT INTO ingredients( ingredient_name, ingredient_price)
@@ -129,7 +159,13 @@ VALUES ();
 
 -- Insert Customers
 INSERT INTO customers (person_id, favorite_dish_id)
-VALUES ();
+VALUES ((
+	SELECT person_id
+    FROM enumerated_people
+    WHERE row_num = 2),
+    (SELECT dish_id
+    FROM dishes
+    WHERE dish_name = "Green Rice"));
 
 -- Insert Orders
 INSERT INTO orders (franchise_id, employee_id, customer_id)

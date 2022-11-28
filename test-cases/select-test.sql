@@ -7,3 +7,7 @@ FROM franchises;
 
 SELECT * 
 FROM inspections;
+
+SELECT * 
+FROM people;
+
