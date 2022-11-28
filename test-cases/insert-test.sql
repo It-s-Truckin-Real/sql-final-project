@@ -5,12 +5,29 @@ VALUES ("122 N 5th E", null, "Rexburg", "ID", "83440")
 ,      ("456 N 2nd W", "APT 35", "Rexburg", "ID", "83440");
 
 -- Insert People
+WITH enumerated_addresses AS (
+	SELECT 
+	ROW_NUMBER() OVER(ORDER BY address_id ASC) AS row_num
+	, address_id
+	FROM addresses 
+	WHERE state = "ID"
+)
+
 INSERT INTO people(first_name,last_name,dob,address_id)
 VALUES 
-('Amirah','Webster','1980-10-02', (SELECT address_id  FROM adresses)),
-('Andy','Montoya','2000-02-05'),
-('Essence','Grimes','1989-08-09'),
-('Pierce','Joseph','1989-10-03');
+('Amirah','Webster','1980-10-02', (
+	SELECT enumerated_addresses.address_id 
+	WHERE row_num = 1)),
+('Andy','Montoya','2000-02-05', (
+	SELECT enumerated_addresses.address_id 
+	WHERE row_num = 1)),
+('Essence','Grimes','1989-08-09', (
+	SELECT enumerated_addresses.address_id 
+	WHERE row_num = 3)),
+('Pierce','Joseph','1989-10-03', (
+	SELECT enumerated_addresses.address_id 
+	WHERE row_num = 3));
+
 -- Insert Customers
 
 -- Insert Franchises
