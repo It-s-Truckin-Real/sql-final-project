@@ -46,7 +46,10 @@ VALUES
     FROM enumerated_addresses
 	WHERE row_num = 3));
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/main
 -- Insert Franchises
 INSERT INTO franchises (address_id) 
 (
@@ -56,7 +59,7 @@ INSERT INTO franchises (address_id)
 );
 
 -- Insert Positions
- INSERT INTO  positions(position_name, hourly_wage)
+ INSERT INTO positions (position_name, hourly_wage)
  VALUES
  ('Server', '7.25'),
  ('Chef', '18'),
@@ -64,8 +67,11 @@ INSERT INTO franchises (address_id)
  ('Host','14');
 
 -- Insert Employees
+<<<<<<< HEAD
  INSERT INTO  employees ()
 -- Insert Inspections
+=======
+>>>>>>> refs/remotes/origin/main
 CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_franchises (
 	SELECT 
 	ROW_NUMBER() OVER(ORDER BY franchise_id ASC) AS row_num
@@ -80,20 +86,41 @@ CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_people (
 	FROM people
 );
 
+ INSERT INTO employees (position_id, person_id, franchise_id)
+ VALUES
+ (
+	(SELECT position_id 
+    FROM positions
+    WHERE position_name = "Manager"),
+    (SELECT person_id
+    FROM enumerated_people
+    WHERE row_num = 1),
+    (SELECT franchise_id
+    FROM enumerated_franchises
+    WHERE row_num = 1)
+);
+ 
+-- Insert Inspections
 INSERT INTO inspections (inspection_date, inspection_score, franchise_id, inspector_person_id)
 VALUES ("2022-11-18", 83, (
-	SELECT enumerated_franchises.franchise_id
+	SELECT franchise_id
     FROM enumerated_franchises
     WHERE row_num = 1), (
-	SELECT enumerated_people.person_id
+	SELECT person_id
     FROM enumerated_people
     WHERE row_num = 2));
 
 -- Insert Inspections Employees
+INSERT INTO inspections_employees (inspection_id, employee_id)
+VALUES ();
 
 -- Insert Time Off Requests
+INSERT INTO time_off_requests (date_requested, date_when_requested, employee_id)
+VALUES ();
 
 -- Insert Payroll
+INSERT INTO payroll (clock_in, clock_out, employee_id)
+VALUES ();
 
 -- Insert Customers
 
@@ -106,9 +133,21 @@ VALUES
 ('Fish','3.50');
 
 -- Insert Dishes
+INSERT INTO dishes (dish_name, dish_price)
+VALUES ();
+
+-- Insert Customers
+INSERT INTO customers (person_id, favorite_dish_id)
+VALUES ();
 
 -- Insert Orders
+INSERT INTO orders (franchise_id, employee_id, customer_id)
+VALUES ();
 
 -- Insert Dish Ingredients
+INSERT INTO dish_ingredients (dish_id, ingredient_id)
+VALUES ();
 
 -- Insert Order Dishes
+INSERT INTO order_dishes (order_id, dish_id)
+VALUES ();
