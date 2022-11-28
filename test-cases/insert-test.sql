@@ -5,7 +5,12 @@ VALUES ("122 N 5th E", null, "Rexburg", "ID", "83440")
 ,      ("456 N 2nd W", "APT 35", "Rexburg", "ID", "83440");
 
 -- Insert People
-
+INSERT INTO people(first_name,last_name,dob,address_id)
+VALUES 
+('Amirah','Webster','1980-10-02', (SELECT address_id  FROM adresses)),
+('Andy','Montoya','2000-02-05'),
+('Essence','Grimes','1989-08-09'),
+('Pierce','Joseph','1989-10-03');
 -- Insert Customers
 
 -- Insert Franchises
