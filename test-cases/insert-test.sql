@@ -118,14 +118,18 @@ VALUES ();
 -- Insert Ingredients
 INSERT INTO ingredients( ingredient_name, ingredient_price)
 VALUES 
-('Onions','0.40'),
+('Rice','0.40'),
 ('Meat','4.5'),
 ('Garlic','0.50'),
-('Fish','3.50');
+('Lobster','3.50');
 
 -- Insert Dishes
 INSERT INTO dishes (dish_name, dish_price)
-VALUES ();
+VALUES 
+('Chilli Lobster','35'),
+('Sweet Pork Lover','25'),
+('Green Rice', '18'),
+('Meat Lover', '29');
 
 -- Insert Customers
 INSERT INTO customers (person_id, favorite_dish_id)
@@ -137,7 +141,13 @@ VALUES ();
 
 -- Insert Dish Ingredients
 INSERT INTO dish_ingredients (dish_id, ingredient_id)
-VALUES ();
+VALUES (
+	(SELECT dish_id,
+	FROM dishes
+	WHERE dish_name = 'Meat Lover' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Meat'));
 
 -- Insert Order Dishes
 INSERT INTO order_dishes (order_id, dish_id)
