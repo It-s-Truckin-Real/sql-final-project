@@ -135,9 +135,11 @@ VALUES (
     FROM employees e
     INNER JOIN enumerated_people p
     ON p.person_id = e.person_id
-    WHERE p.row_num = 1))
+    WHERE p.row_num = 1));
     
-,	((SELECT TIMESTAMP("2022-11-18",  "13:42:52"))
+INSERT INTO payroll (clock_in, clock_out, employee_id)
+VALUES (
+	(SELECT TIMESTAMP("2022-11-18",  "13:42:52"))
 ,	(SELECT TIMESTAMP("2022-11-18",  "18:30:29"))
 ,	(SELECT e.employee_id
     FROM employees e
