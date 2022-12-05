@@ -40,3 +40,45 @@ SET address_id = (
     )
 LIMIT 1;
 
+UPDATE people 
+SET first_name = "Lucas"
+WHERE person_id =( 
+	SELECT person_id
+	FROM people
+	WHERE first_name = 'Andy' AND last_name= 'Montoya'
+);
+
+UPDATE dishes
+SET  dish_price = '37'
+WHERE dish_name = 'Chilli Lobster'
+
+UPDATE Ingredients
+SET ingredient_name = 'White Rice'
+WHERE ingredient_name ='Rice';
+
+UPDATE customers
+SET favorite_dish_id = (
+	SELECT dish_id
+	FROM dishes
+	WHERE dish_name ='Chilli Lobster')
+WHERE person_id =(
+	SELECT person_id
+    FROM enumerated_people
+    WHERE row_num = 2
+);
+
+
+UPDATE = dish_ingredients
+SET ingredient_id= (
+	SELECT ingredient_id
+	FROM Ingredients
+	WHERE ingredient_name = 'Lobster')
+WHERE dish_id = (
+	SELECT dish_id 
+	FROM dishes
+	WHERE dish_name = 'Meat Lover'
+);
+
+
+
+
