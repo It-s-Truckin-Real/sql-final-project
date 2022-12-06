@@ -2,13 +2,18 @@
 DROP TEMPORARY TABLE IF EXISTS enumerated_addresses;
 DROP TEMPORARY TABLE IF EXISTS enumerated_franchises;
 DROP TEMPORARY TABLE IF EXISTS enumerated_people;
+DROP TEMPORARY TABLE IF EXISTS enumerated_customers;
+DROP TEMPORARY TABLE IF EXISTS enumerated_employees;
+DROP TEMPORARY TABLE IF EXISTS enumerated_orders;
 
 -- Insert Addresses
 INSERT INTO addresses (street_1, street_2, city, state, zip_code)
-VALUES ("122 N 5th E", null, "Rexburg", "ID", "83440")
+VALUES ("122 N 5th E", NULL, "Rexburg", "ID", "83440")
 ,      ("320 S 3rd E", "APT 12", "Rexburg", "ID", "83440")
 ,      ("456 N 2nd W", "APT 35", "Rexburg", "ID", "83440")
-,      ("456 N 2nd W", "APT 34", "Rexburg", "ID", "83440");
+,      ("456 N 2nd W", "APT 34", "Rexburg", "ID", "83440")
+,      ("510 S Center St", NULL, "Rexburg", "ID", "83440")
+,      ("275 Yellowstone Ave", NULL, "Pocatello", "ID", "83201");
 
 -- Insert People
 CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_addresses (
@@ -41,17 +46,38 @@ VALUES
 
 INSERT INTO people(first_name,last_name,dob,address_id)
 VALUES 
-('Pierce','Joseph','1989-10-03', (
+('Pierce','Grimes','1990-10-03', (
 	SELECT enumerated_addresses.address_id 
     FROM enumerated_addresses
 	WHERE row_num = 3));
 
+INSERT INTO people(first_name,last_name,dob,address_id)
+VALUES 
+('Steven','Stroingle','1979-01-07', (
+	SELECT enumerated_addresses.address_id 
+    FROM enumerated_addresses
+	WHERE row_num = 4));
+
+INSERT INTO people(first_name,last_name,dob,address_id)
+VALUES 
+('Bobby','Brown','1979-01-07', (
+	SELECT enumerated_addresses.address_id 
+    FROM enumerated_addresses
+	WHERE row_num = 5));
+
 -- Insert Franchises
 INSERT INTO franchises (address_id) 
 (
-	SELECT enumerated_addresses.address_id
+	SELECT address_id
     FROM enumerated_addresses
     WHERE row_num = 2
+);
+
+INSERT INTO franchises (address_id) 
+(
+	SELECT address_id
+    FROM enumerated_addresses
+    WHERE row_num = 6
 );
 
 -- Insert Positions
@@ -148,20 +174,30 @@ VALUES (
     WHERE p.row_num = 1));
 
 -- Insert Ingredients
-INSERT INTO ingredients( ingredient_name, ingredient_price)
+INSERT INTO ingredients( ingredient_name, ingredient_price, ingredient_units, ingredient_units_plural)
 VALUES 
-('Rice','0.40'),
-('Meat','4.5'),
-('Garlic','0.50'),
-('Lobster','3.50');
+('Enchilada Sauce',		'1.98',		'Can',		'Cans'),
+('Coke',				'0.51',		'Can',		'Cans'),
+('Brown Sugar',			'0.55',		'Cup',		'Cups'),
+('Rice',				'0.72',		'Cup',		'Cups'),
+('Lobster',				'48.95',	NULL,		NULL),
+('Pork',				'5.02',		'Lb',		'Lbs'),
+('Ground Beef',			'4.26',		'Lb',		'Lbs'),
+('Egg',					'0.21',		NULL,		NULL),
+('Chicken Stock',		'1.00',		'Cup',		'Cups'),
+('Garlic',				'0.50',		'Bulb',		'Bulbs'),
+('Tomato',				'0.38',		NULL,		NULL),
+('Tamarind',			'11.61',	'Can',		'Cans'),
+('Red Chilli',			'0.07',		NULL,		NULL),
+('Green Chilli',		'0.06',		NULL,		NULL);
 
 -- Insert Dishes
 INSERT INTO dishes (dish_name, dish_price)
 VALUES 
-('Chilli Lobster','35'),
-('Sweet Pork Lover','25'),
-('Green Rice', '18'),
-('Meat Lover', '29');
+('Chilli Lobster',		'124.95'),
+('Sweet Pork',			'24.95'),
+('Green Rice', 			'18.45'),
+('Meat Lover', 			'24.95');
 
 -- Insert Customers
 INSERT INTO customers (person_id, favorite_dish_id)
@@ -174,41 +210,209 @@ VALUES ((
     WHERE dish_name = "Green Rice"));
 
 -- Insert Orders
+CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_customers (
+	SELECT 
+	ROW_NUMBER() OVER(ORDER BY customer_id ASC) AS row_num
+	, customer_id
+	FROM customers
+);
+
+CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_employees (
+	SELECT 
+	ROW_NUMBER() OVER(ORDER BY employee_id ASC) AS row_num
+	, employee_id
+	FROM employees
+);
+
 INSERT INTO orders (franchise_id, employee_id, customer_id)
-VALUES (
+VALUES 	(
 	(SELECT franchise_id
     FROM enumerated_franchises
     WHERE row_num = 1
 	), 
 	(SELECT employee_id
-	FROM employees
-	LIMIT 1
+	FROM enumerated_employees
+	WHERE row_num = 1
 	),
 	(SELECT customer_id
-	FROM customers
-	LIMIT 1 )
+	FROM enumerated_customers
+	WHERE row_num = 1 )
+);
 
+INSERT INTO orders (franchise_id, employee_id, customer_id)
+VALUES 	(
+	(SELECT franchise_id
+    FROM enumerated_franchises
+    WHERE row_num = 1
+	), 
+	(SELECT employee_id
+	FROM enumerated_employees
+	WHERE row_num = 1
+	),
+	(SELECT customer_id
+	FROM enumerated_customers
+	WHERE row_num = 1 )
+);
+
+INSERT INTO orders (franchise_id, employee_id, customer_id)
+VALUES 	(
+	(SELECT franchise_id
+    FROM enumerated_franchises
+    WHERE row_num = 1
+	), 
+	(SELECT employee_id
+	FROM enumerated_employees
+	WHERE row_num = 1
+	),
+	(SELECT customer_id
+	FROM enumerated_customers
+	WHERE row_num = 1 )
 );
 
 -- Insert Dish Ingredients
-INSERT INTO dish_ingredients (dish_id, ingredient_id)
-VALUES (
+INSERT INTO dish_ingredients (dish_id, ingredient_id, ingredient_amount)
+VALUES 	(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Chilli Lobster' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Lobster'),
+    2)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Chilli Lobster' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Garlic'),
+    0.3)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Chilli Lobster' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Tomato'),
+    2)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Chilli Lobster' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Tamarind'),
+    0.5)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Chilli Lobster' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Red Chilli'),
+    1)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Sweet Pork' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Brown Sugar'),
+    1.5)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Sweet Pork' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Pork'),
+    3)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Sweet Pork' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Coke'),
+    3)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Green Rice' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Rice'),
+    2)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Green Rice' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Enchilada Sauce'),
+    0.5)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Green Rice' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Garlic'),
+    0.15)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Green Rice' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Green Chilli'),
+    8)
+,		(
 	(SELECT dish_id
 	FROM dishes
 	WHERE dish_name = 'Meat Lover' ),
 	(SELECT ingredient_id
 	FROM ingredients
-	WHERE ingredient_name= 'Meat'));
+	WHERE ingredient_name= 'Ground Beef'),
+    1)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Meat Lover' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Pork'),
+    1)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Meat Lover' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Chicken Stock'),
+    1)
+,		(
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Meat Lover' ),
+	(SELECT ingredient_id
+	FROM ingredients
+	WHERE ingredient_name= 'Garlic'),
+    0.25);
 
 -- Insert Order Dishes
+CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_orders (
+	SELECT 
+	ROW_NUMBER() OVER(ORDER BY order_id ASC) AS row_num
+	, order_id
+	FROM orders
+);
+
 INSERT INTO order_dishes (order_id, dish_id)
 VALUES 
 	((SELECT order_id
-	FROM orders
-	WHERE franchise_id = 
-		(SELECT franchise_id
-		FROM enumerated_franchises
-		WHERE row_num = 1)
+	FROM enumerated_orders
+    WHERE row_num = 1
 	),
 	(SELECT dish_id
 	FROM dishes
@@ -217,12 +421,29 @@ VALUES
 INSERT INTO order_dishes (order_id, dish_id)
 VALUES 
 	((SELECT order_id
-	FROM orders
-	WHERE franchise_id = 
-		(SELECT franchise_id
-		FROM enumerated_franchises
-		WHERE row_num = 1)
+	FROM enumerated_orders
+    WHERE row_num = 1
 	),
 	(SELECT dish_id
 	FROM dishes
 	WHERE dish_name = 'Green Rice' ));
+    
+INSERT INTO order_dishes (order_id, dish_id)
+VALUES 
+	((SELECT order_id
+	FROM enumerated_orders
+    WHERE row_num = 2
+	),
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Chilli Lobster' ));
+    
+INSERT INTO order_dishes (order_id, dish_id)
+VALUES 
+	((SELECT order_id
+	FROM enumerated_orders
+    WHERE row_num = 3
+	),
+	(SELECT dish_id
+	FROM dishes
+	WHERE dish_name = 'Sweet Pork' ));

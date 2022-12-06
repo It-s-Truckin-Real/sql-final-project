@@ -16,30 +16,34 @@ ON p.employee_id = e.employee_id
 INNER JOIN position pos
 ON e.position_id = pos.position_id;
 
-SELECT dish_name, dish_price
-FROM dishes;
-
 WITH dish_price_and_cost AS (
-SELECT	d.dish_id dish_id
-,		d.dish_price dish_price
-,		SUM(i.ingredient_price) ingredient_cost
-FROM dishes d
-INNER JOIN dish_ingredients di
-ON d.dish_id = di.dish_id
-INNER JOIN ingredients i
-ON di.ingredient_id = i.ingredient_id
-GROUP BY d.dish_name
+	SELECT	d.dish_id dish_id
+	,		d.dish_price dish_price
+	,		SUM(i.ingredient_price * di.ingredient_amount) ingredient_cost
+	FROM dishes d
+	LEFT JOIN dish_ingredients di
+	ON d.dish_id = di.dish_id
+	LEFT JOIN ingredients i
+	ON di.ingredient_id = i.ingredient_id
+	GROUP BY d.dish_name
 )
+
 SELECT 	CONCAT(p1.first_name, " ", p1.last_name) customer_name
 ,		CONCAT(p2.first_name, " ", p2.last_name) employee_serving
 ,		CONCAT_WS("", a.street_1, CONCAT(" ", a.street_2), ", ", a.city, ", ", a.state, ", ", a.zip_code) franchise_location
 ,		GROUP_CONCAT(d.dish_name ORDER BY d.dish_name SEPARATOR "\n") dishes_ordered 
 ,		(
 	SELECT SUM(dpc.dish_price)
-    ) total_price
+    ) total_price_before_tax
 ,		(
 	SELECT SUM(dpc.ingredient_cost)
     ) total_ingredient_cost
+,		(
+	SELECT SUM(dpc.dish_price) - SUM(dpc.ingredient_cost)
+    ) total_profit
+,		(
+	SELECT (SUM(dpc.dish_price) - SUM(dpc.ingredient_cost)) / SUM(dpc.dish_price)
+    ) profit_price_ratio
 FROM orders o
 INNER JOIN employees e
 ON o.employee_id = e.employee_id
@@ -59,4 +63,37 @@ INNER JOIN dishes d
 ON od.dish_id = d.dish_id
 INNER JOIN dish_price_and_cost dpc
 ON d.dish_id = dpc.dish_id
+GROUP BY o.order_id
 ORDER BY franchise_location;
+
+WITH ingredient_strings AS (
+	SELECT 	d.dish_name dish_name
+	,		CAST(di.ingredient_amount AS FLOAT) ingredient_amount
+    ,		(di.ingredient_amount - 1) plural
+    ,		i.ingredient_units
+    ,		i.ingredient_name
+	FROM dish_ingredients di
+	INNER JOIN dishes d
+	ON di.dish_id = d.dish_id
+	INNER JOIN ingredients i
+	ON di.ingredient_id = i.ingredient_id
+)
+
+SELECT 	dish_name
+,		CONCAT_WS(" ", 
+			ingredient_amount, 
+            CONCAT(
+				ingredient_units
+			,	CASE
+					WHEN plural THEN 's'
+                    ELSE ''
+				END), 
+            CONCAT(
+				ingredient_name
+			,	CASE
+					WHEN (plural AND (ingredient_units IS NULL)) THEN 's'
+                    ELSE ''
+				END)
+        ) dish_ingredients 
+FROM ingredient_strings;
+

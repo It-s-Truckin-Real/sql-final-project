@@ -25,6 +25,8 @@ CREATE TEMPORARY TABLE IF NOT EXISTS enumerated_people (
 	FROM people
 );
 
+SET SQL_SAFE_UPDATES = 0;
+
 -- Update Statements
 UPDATE addresses
 SET street_2 = "APT 13"
@@ -40,19 +42,16 @@ SET address_id = (
     )
 LIMIT 1;
 
-UPDATE people 
+UPDATE people
 SET first_name = "Lucas"
-WHERE person_id =( 
-	SELECT person_id
-	FROM people
-	WHERE first_name = 'Andy' AND last_name= 'Montoya'
-);
+WHERE first_name = 'Andy' 
+AND last_name= 'Montoya';
 
 UPDATE dishes
 SET  dish_price = '37'
-WHERE dish_name = 'Chilli Lobster'
+WHERE dish_name = 'Chilli Lobster';
 
-UPDATE Ingredients
+UPDATE ingredients
 SET ingredient_name = 'White Rice'
 WHERE ingredient_name ='Rice';
 
@@ -67,17 +66,24 @@ WHERE person_id =(
     WHERE row_num = 2
 );
 
-
-UPDATE = dish_ingredients
-SET ingredient_id= (
+UPDATE dish_ingredients
+SET ingredient_id = (
 	SELECT ingredient_id
-	FROM Ingredients
+	FROM ingredients
 	WHERE ingredient_name = 'Lobster')
+,	ingredient_amount = ingredient_amount / 5
 WHERE dish_id = (
 	SELECT dish_id 
 	FROM dishes
 	WHERE dish_name = 'Meat Lover'
+)
+AND ingredient_id = (
+	SELECT ingredient_id 
+	FROM ingredients
+	WHERE ingredient_name = 'Ground Beef'
 );
+
+SET SQL_SAFE_UPDATES = 1;
 
 
 

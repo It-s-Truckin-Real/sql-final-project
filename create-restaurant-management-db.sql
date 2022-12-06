@@ -126,6 +126,8 @@ CREATE TABLE IF NOT EXISTS `restaurant_management`.`ingredients` (
   `ingredient_id` INT NOT NULL AUTO_INCREMENT,
   `ingredient_name` VARCHAR(30) NOT NULL,
   `ingredient_price` DECIMAL(5,2) NOT NULL,
+  `ingredient_units` VARCHAR(30),
+  `ingredient_units_plural` VARCHAR(30),
   PRIMARY KEY (`ingredient_id`))
 ENGINE = InnoDB;
 
@@ -296,6 +298,7 @@ CREATE TABLE IF NOT EXISTS `restaurant_management`.`dish_ingredients` (
   `dish_ingredients_id` INT NOT NULL AUTO_INCREMENT,
   `dish_id` INT NOT NULL,
   `ingredient_id` INT NOT NULL,
+  `ingredient_amount` DECIMAL(4,2) NOT NULL,
   PRIMARY KEY (`dish_ingredients_id`),
   UNIQUE INDEX `dish_ingredients_id_UNIQUE` (`dish_ingredients_id` ASC),
   INDEX `fk_dish_ingredients_dishes1_idx` (`dish_id` ASC),
