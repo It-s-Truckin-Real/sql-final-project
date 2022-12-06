@@ -48,7 +48,7 @@ WHERE first_name = 'Andy'
 AND last_name= 'Montoya';
 
 UPDATE dishes
-SET  dish_price = '37'
+SET  dish_price = '137'
 WHERE dish_name = 'Chilli Lobster';
 
 UPDATE ingredients
